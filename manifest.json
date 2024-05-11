@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "BingAI Sidebar for Chrome",
+  "description": "Microsoft Copilot sidebar ported from Edge to Chrome",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Click to open sidebar"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["sidePanel", "declarativeNetRequest", "tabs", "notifications", "storage", "cookies"],
+  "content_scripts": [
+    {
+      "js": ["shell/inject.js"],
+      "matches": ["https://*/edgesvc/shell*"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "js": ["hack/chat.js"],
+      "matches": ["https://*/edgesvc/chat*"],
+      "run_at": "document_end",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "js": ["hack/compose.js"],
+      "matches": ["https://*/edgesvc/compose*"],
+      "run_at": "document_end",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "js": ["libs/pdf.min.js", "content-script.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_bing",
+        "enabled": true,
+        "path": "rules/bing.json"
+      }
+    ]
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      }
+    }
+  }
+}

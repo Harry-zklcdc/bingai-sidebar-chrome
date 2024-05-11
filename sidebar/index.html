@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bing Sidebar for Chrome</title>
+    <style>
+      iframe {
+        width: calc(100vw);
+        height: calc(100vh - 48px);
+        margin: 0;
+        padding: 0;
+        position: fixed;
+        top: 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <iframe
+      id="underside-iframe-container"
+      name="underside-iframe-container"
+      frameborder="0"
+      allow="clipboard-write"
+    ></iframe>
+    <script src="./sidepanel.js"></script>
+    <script
+      defer
+      data-domain="sidepanel.bing-sidebar.com"
+      data-api="https://plausible.midway.run/api/event"
+      src="./plausible.js"
+    ></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
