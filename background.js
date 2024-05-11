@@ -12,61 +12,34 @@ if (chrome.sidePanel) {
 }
 
 const settingsName = 'copilot_settings';
-var baseUrl = '', BASE_URL, cookies = {}, cookieStr = '';
+var baseUrl = '', BASE_URL, cookies = {}, cctCookie = '';
 chrome.storage.local.get(settingsName, function(items) {
   if (items[settingsName]) {
     baseUrl = items[settingsName].baseUrl;
     BASE_URL = new URL("https://"+BASE_URL);
-    // getCookies(baseUrl);
-    updateDynamicRules(baseUrl);
+    getCookies(baseUrl);
   }
 });
 
-// function getCookies(baseUrl) {
-//   cookies = {}
-//   let BASE_URL = new URL("https://"+baseUrl);
-//   chrome.cookies.getAll( { domain: BASE_URL.hostname.split('.').slice(-2).join('.')}, function( cookie ){ 
-//     cookie.forEach(function(c){ 
-//       if (c.name === 'cf_clearance') cookies['cf_clearance'] = c.value;
-//     });
-//     chrome.cookies.getAll( { domain: BASE_URL.hostname}, function( cookie ){ 
-//       cookie.forEach(function(c){ 
-//         cookies[c.name] = c.value;
-//       });
-//       cookieStr = Object.keys(cookies).map(k => k + '=' + cookies[k]).join('; ');
-//       updateDynamicRules(baseUrl);
-//     });
-//   });
-// }
+function getCookies(baseUrl) {
+  chrome.cookies.get( { url: "https://"+baseUrl, name: 'cct'}, function( cookie ){ 
+    if (cookie) {
+      cctCookie = cookie.value;
+      console.log('Get cct cookie: '+cctCookie)
+    }
+    updateDynamicRules(baseUrl);
+  });
+}
 
 function updateDynamicRules(baseUrl) {
-  console.log(cookieStr)
   chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [1, 3],
+    removeRuleIds: [ 1, 2, 3 ],
     addRules: [
       {
         id: 1,
         priority: 1,
         action: {
           type: "modifyHeaders",
-          requestHeaders: [
-            // {
-            //   header: "cookie",
-            //   operation: "set",
-            //   value: cookieStr,
-            // },
-            {
-              header: "user-agent",
-              operation: "set",
-              value:
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0",
-            },
-            {
-              header: "sec-ch-ua",
-              operation: "set",
-              value: '"Microsoft Edge";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
-            },
-          ],
           responseHeaders: [
             { header: "x-frame-options", operation: "remove" },
             { header: "content-security-policy", operation: "remove" },
@@ -75,6 +48,25 @@ function updateDynamicRules(baseUrl) {
         condition: {
           urlFilter: `*://${baseUrl}/*`,
           isUrlFilterCaseSensitive: false,
+        },
+      },
+      {
+        id: 2,
+        priority: 1,
+        action: {
+          type: "modifyHeaders",
+          requestHeaders: [
+            {
+              header: "cookie",
+              operation: "append",
+              value: 'cct='+cctCookie,
+            },
+          ],
+        },
+        condition: {
+          urlFilter: `*://${baseUrl}/*`,
+          isUrlFilterCaseSensitive: false,
+          resourceTypes: ["websocket"],
         },
       },
       {
@@ -91,7 +83,7 @@ function updateDynamicRules(baseUrl) {
           ]
         },
         condition: {
-          requestDomains: [baseUrl],
+          requestDomains: [ baseUrl ],
           resourceTypes: ["sub_frame"]
         }
       }
@@ -115,4 +107,12 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.storage.onChanged.addListener(function(changes, areaName){
   updateDynamicRules(changes[settingsName].newValue.baseUrl);
+});
+
+chrome.cookies.onChanged.addListener(function(changeInfo) {
+  if (changeInfo.cookie.domain == baseUrl && changeInfo.cookie.name == 'cct' && changeInfo.cookie.value != cctCookie) {
+    cctCookie = changeInfo.cookie.value;
+    console.log('Update cct cookie: '+cctCookie)
+    updateDynamicRules(baseUrl);
+  }
 });
