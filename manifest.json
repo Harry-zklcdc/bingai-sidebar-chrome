@@ -29,6 +29,20 @@
       "world": "MAIN"
     },
     {
+      "js": ["sidepanel/libs.js"],
+      "matches": ["https://*/edgesvc/chat*", "https://*/edgesvc/compose*"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "js": ["sidepanel/global.js"],
+      "matches": ["https://*/edgesvc/chat*", "https://*/edgesvc/compose*"],
+      "run_at": "document_end",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
       "js": ["hack/chat.js"],
       "matches": ["https://*/edgesvc/chat*"],
       "run_at": "document_end",
