@@ -6,7 +6,6 @@ export function set(key, val) {
   copilot_settings[key] = val;
   var obj = {};
   obj[settingsName] = copilot_settings;
-  console.log(copilot_settings);
   chrome.storage.local.set(obj, function() {
     console.log('Settings are saved.');
   });
