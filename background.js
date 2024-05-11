@@ -13,8 +13,8 @@ if (chrome.sidePanel) {
 
 chrome.contextMenus.create({
   id: "OpenCloseSidePanel",
-  title: '打开 BingAI 侧边栏',
-  contexts: ['all'],
+  title: "打开 BingAI 侧边栏",
+  contexts: [ "all" ],
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -58,7 +58,7 @@ function updateDynamicRules(baseUrl) {
           ],
         },
         condition: {
-          urlFilter: `*://${baseUrl}/*`,
+          urlFilter: `||${baseUrl}`,
           isUrlFilterCaseSensitive: false,
         },
       },
@@ -76,9 +76,9 @@ function updateDynamicRules(baseUrl) {
           ],
         },
         condition: {
-          urlFilter: `*://${baseUrl}/*`,
+          urlFilter: `||${baseUrl}`,
           isUrlFilterCaseSensitive: false,
-          resourceTypes: ["websocket"],
+          resourceTypes: [ "websocket" ],
         },
       },
       {
@@ -96,7 +96,7 @@ function updateDynamicRules(baseUrl) {
         },
         condition: {
           requestDomains: [ baseUrl ],
-          resourceTypes: ["sub_frame"]
+          resourceTypes: [ "sub_frame" ]
         }
       }
     ],
