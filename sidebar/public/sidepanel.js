@@ -30,25 +30,38 @@ let chatPageInitialized = false;
 async function postMessageListner(event) {
   console.debug("onMessage", event.origin, JSON.stringify(event.data));
   const eventName = event.data.eventName;
-  if (eventName === "Discover.Chat.Interact.Req") {
-    sendEventToIframe("Discover.Chat.Interact.Rep", { status: true });
-  } else if (eventName === "Discover.Chat.Consent.Req") {
-    sendEventToIframe("Discover.Chat.Consent.Rep", { text: "Accepted" });
-  } else if (eventName === "Discover.Chat.Page.GetData") {
-    const tab = await getActiveTab();
-    const response = await chrome.tabs.sendMessage(tab.id, { action: "getPageData" });
-    sendEventToIframe("Discover.Chat.Page", { text: response.text });
-  } else if (eventName === "Discover.Ready" && !chatPageInitialized) {
-    sendEventToIframe("Discover.VisibilityState", { isShow: true, timeStamp: Date.now() });
-    sendEventToIframe("Discover.Tab.Click", { tabName: "chat", clientLevel: "window" });
-    chatPageInitialized = true;
-    const tab = await getActiveTab();
-    if (tab) {
-      sendEventToIframe("Discover.Client.TabStripModelChange", {
-        eventType: "Activate",
-        tabInfo: buildActiveTabInfo(tab),
-      });
-    }
+  switch (eventName) {
+    case "Discover.Chat.Interact.Req":
+      sendEventToIframe("Discover.Chat.Interact.Rep", { status: true });
+      break;
+    case "Discover.Chat.Consent.Req":
+      sendEventToIframe("Discover.Chat.Consent.Rep", { text: "Accepted" });
+      break;
+    case "Discover.Chat.Page.GetData":
+      const tab1 = await getActiveTab();
+      const response = await chrome.tabs.sendMessage(tab1.id, { action: "getPageData" });
+      sendEventToIframe("Discover.Chat.Page", { text: response.text });
+      break;
+    case "Discover.Ready":
+      if (!chatPageInitialized) {
+        sendEventToIframe("Discover.VisibilityState", { isShow: true, timeStamp: Date.now() });
+        sendEventToIframe("Discover.Tab.Click", { tabName: "chat", clientLevel: "window" });
+        chatPageInitialized = true;
+        const tab2 = await getActiveTab();
+        if (tab2) {
+          sendEventToIframe("Discover.Client.TabStripModelChange", {
+            eventType: "Activate",
+            tabInfo: buildActiveTabInfo(tab2),
+          });
+        }
+      }
+      break;
+    case "Discover.CoAuthor.InsertToPage":
+      const tab3 = await getActiveTab();
+      await chrome.tabs.sendMessage(tab3.id, { action: "insertToPage", text: event.data.eventArgs.text });
+      break;
+    default:
+      break;
   }
 };
 

@@ -32,13 +32,23 @@ function isPDFPage() {
 }
 
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.action === "getPageData") {
-    const text = document.body.innerText;
-    if (text) {
-      sendResponse({ text });
-    } else if (isPDFPage()) {
-      extractPDFText(location.href).then((text) => sendResponse({ text }));
-      return true;
-    }
+  switch (request.action) {
+    case "getPageData":
+      const text = document.body.innerText;
+      if (text) {
+        sendResponse({ text });
+      } else if (isPDFPage()) {
+        extractPDFText(location.href).then((text) => sendResponse({ text }));
+        return true;
+      }
+      break;
+    case "insertToPage":
+      const ele = document.activeElement;
+      if (ele) {
+        ele.value = request.text;
+      }
+      break;
+    default:
+      break;
   }
 });
