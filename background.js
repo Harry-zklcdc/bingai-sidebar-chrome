@@ -11,6 +11,18 @@ if (chrome.sidePanel) {
   });
 }
 
+chrome.contextMenus.create({
+  id: "OpenCloseSidePanel",
+  title: '打开 BingAI 侧边栏',
+  contexts: ['all'],
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'OpenCloseSidePanel') {
+    chrome.sidePanel.open({ windowId: tab.windowId });
+  }
+});
+
 const settingsName = 'copilot_settings';
 var baseUrl = '', BASE_URL, cookies = {}, cctCookie = '';
 chrome.storage.local.get(settingsName, function(items) {

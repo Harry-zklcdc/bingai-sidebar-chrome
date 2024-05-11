@@ -13,13 +13,13 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Click to open sidebar"
+    "default_title": "点击打开 BingAI 侧边栏"
   },
   "side_panel": {
     "default_path": "sidepanel/index.html"
   },
   "host_permissions": ["<all_urls>"],
-  "permissions": ["sidePanel", "declarativeNetRequest", "tabs", "notifications", "storage", "cookies"],
+  "permissions": ["sidePanel", "declarativeNetRequest", "tabs", "notifications", "storage", "cookies", "contextMenus"],
   "content_scripts": [
     {
       "js": ["shell/inject.js"],
