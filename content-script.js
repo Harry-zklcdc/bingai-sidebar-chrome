@@ -1,22 +1,3 @@
-async function extractPDFText(url) {
-  const pdf = await pdfjsLib.getDocument(url).promise;
-  console.debug("PDF pages", pdf.numPages);
-
-  const countPromises = [];
-  for (let currentPage = 1; currentPage <= pdf.numPages; currentPage++) {
-    const page = pdf.getPage(currentPage);
-    countPromises.push(
-      page.then(async (page) => {
-        const text = await page.getTextContent();
-        return text.items.map((s) => s.str).join("");
-      })
-    );
-  }
-
-  const texts = await Promise.all(countPromises);
-  return texts.join("");
-}
-
 function isPDFPage() {
   if (/\.pdf$/i.test(location.href)) {
     return true;
@@ -38,7 +19,11 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       if (text) {
         sendResponse({ text });
       } else if (isPDFPage()) {
-        extractPDFText(location.href).then((text) => sendResponse({ text }));
+        // extractPDFText(location.href).then((text) => sendResponse({ text }));
+        chrome.runtime.sendMessage({ action: "getPdfText", url: location.href }, (response) => {
+          // console.log("PDF text", response.text);
+          sendResponse({ text: response.text });
+        });
         return true;
       }
       break;

@@ -1,3 +1,8 @@
+import pdfjsLib from "./libs/pdf.min.js";
+import pdfjsWorker from "./libs/pdf.worker.min.js";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker.WorkerMessageHandler;
+
 if (chrome.sidePanel) {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 } else {
@@ -128,3 +133,39 @@ chrome.cookies.onChanged.addListener(function(changeInfo) {
     updateDynamicRules(baseUrl);
   }
 });
+
+
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+  switch (request.action) {
+    case "getPdfText":
+      extractPDFText(request.url).then((text) => {
+        console.log('PDF text', text);
+        sendResponse({ text })
+      });
+      return true;
+    default:
+      sendResponse();
+      break;
+  }
+});
+
+async function extractPDFText(url) {
+  let pdfFile = await fetch(url);
+  let pdfData = await pdfFile.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+  console.debug("PDF pages", pdf.numPages);
+
+  const countPromises = [];
+  for (let currentPage = 1; currentPage <= pdf.numPages; currentPage++) {
+    const page = pdf.getPage(currentPage);
+    countPromises.push(
+      page.then(async (page) => {
+        const text = await page.getTextContent();
+        return text.items.map((s) => s.str).join("");
+      })
+    );
+  }
+
+  const texts = await Promise.all(countPromises);
+  return texts.join("");
+}

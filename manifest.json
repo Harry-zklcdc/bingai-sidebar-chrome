@@ -10,7 +10,8 @@
     "128": "icon.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
     "default_title": "点击打开 BingAI 侧边栏"
@@ -57,7 +58,7 @@
       "world": "MAIN"
     },
     {
-      "js": ["libs/pdf.min.js", "content-script.js"],
+      "js": ["content-script.js"],
       "matches": ["<all_urls>"]
     }
   ],
