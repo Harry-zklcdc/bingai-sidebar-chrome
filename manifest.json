@@ -19,7 +19,7 @@
     "default_path": "sidepanel/index.html"
   },
   "host_permissions": ["<all_urls>"],
-  "permissions": ["sidePanel", "declarativeNetRequest", "tabs", "notifications", "storage", "cookies", "contextMenus"],
+  "permissions": ["sidePanel", "declarativeNetRequest", "activeTab", "notifications", "storage", "cookies", "contextMenus"],
   "content_scripts": [
     {
       "js": ["shell/inject.js"],
