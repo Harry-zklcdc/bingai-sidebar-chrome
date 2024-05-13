@@ -42,23 +42,32 @@ async function postMessageListner(event) {
       const response = await chrome.tabs.sendMessage(tab1.id, { action: "getPageData" });
       sendEventToIframe("Discover.Chat.Page", { text: response.text });
       break;
+    case "Discover.Chat.Page.GetMetaData":
+      const tab2 = await getActiveTab();
+      sendEventToIframe("Discover.Chat.Page.MetaData", {
+        pageType: 0,
+        title: tab2.title,
+        url: tab2.url,
+        metaData: {}
+      })
+      break;
     case "Discover.Ready":
       if (!chatPageInitialized) {
         sendEventToIframe("Discover.VisibilityState", { isShow: true, timeStamp: Date.now() });
         sendEventToIframe("Discover.Tab.Click", { tabName: "chat", clientLevel: "window" });
         chatPageInitialized = true;
-        const tab2 = await getActiveTab();
-        if (tab2) {
+        const tab3 = await getActiveTab();
+        if (tab3) {
           sendEventToIframe("Discover.Client.TabStripModelChange", {
             eventType: "Activate",
-            tabInfo: buildActiveTabInfo(tab2),
+            tabInfo: buildActiveTabInfo(tab3),
           });
         }
       }
       break;
     case "Discover.CoAuthor.InsertToPage":
-      const tab3 = await getActiveTab();
-      await chrome.tabs.sendMessage(tab3.id, { action: "insertToPage", text: event.data.eventArgs.text });
+      const tab4 = await getActiveTab();
+      await chrome.tabs.sendMessage(tab4.id, { action: "insertToPage", text: event.data.eventArgs.text });
       break;
     default:
       break;
