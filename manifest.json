@@ -46,6 +46,7 @@
     {
       "js": ["hack/chat.js"],
       "matches": ["https://*/edgesvc/chat*"],
+      "exclude_matches": ["https://edgeservices.bing.com/*"],
       "run_at": "document_end",
       "all_frames": true,
       "world": "MAIN"
@@ -53,6 +54,7 @@
     {
       "js": ["hack/compose.js"],
       "matches": ["https://*/edgesvc/compose*"],
+      "exclude_matches": ["https://edgeservices.bing.com/*"],
       "run_at": "document_end",
       "all_frames": true,
       "world": "MAIN"
