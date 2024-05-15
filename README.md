@@ -10,7 +10,9 @@
 
 一键登录, 国内可用, 支持自定义接入链接
 
-![Vue3](https://img.shields.io/badge/Vue-3.4.21-green?style=flat-square&logo=vue.js) ![Release](https://img.shields.io/github/v/release/Harry-zklcdc/bingai-sidebar-chrome.svg?style=flat-square&label=Release&logo=github&color=light-green)
+![Vue3](https://img.shields.io/badge/Vue-3.4.21-green?style=flat-square&logo=vue.js) ![Release](https://img.shields.io/github/v/release/Harry-zklcdc/bingai-sidebar-chrome.svg?style=flat-square&label=Release&logo=github&color=light-green) ![License](https://img.shields.io/github/license/Harry-zklcdc/bingai-sidebar-chrome.svg?style=flat-square&label=License&logo=github&color=blue)
+
+[![Install Now](https://storage.googleapis.com/web-dev-uploads/image/WlD8wC6g8khYWPJUsQceQkhXSlv1/UV4C4ybeBTsZt43U4xis.png)](https://chromewebstore.google.com/detail/bingai-sidebar-for-chrome/enfbonjklffanbdpfabadbgaljojhlei)
 
 </div>
 
