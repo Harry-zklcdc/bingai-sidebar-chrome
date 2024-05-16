@@ -19,7 +19,7 @@
   "side_panel": {
     "default_path": "sidepanel/index.html"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": ["file://*/*", "*://*/*"],
   "permissions": ["sidePanel", "declarativeNetRequest", "activeTab", "notifications", "storage", "cookies", "contextMenus"],
   "content_scripts": [
     {
@@ -61,7 +61,7 @@
     },
     {
       "js": ["content-script.js"],
-      "matches": ["<all_urls>"]
+      "matches": ["file://*/*", "*://*/*"]
     }
   ],
   "commands": {
